@@ -1,0 +1,21 @@
+{
+    "name": "yiqiniu/think-console",
+    "description": "yiqiniu",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "gjianbo",
+            "email": "gjianbo@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "yiqiniu\\": "src"
+        },
+        "files": [
+            "src/command.php"
+        ]
+    },
+    "require": {}
+}

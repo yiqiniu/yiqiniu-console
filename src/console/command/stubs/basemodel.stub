@@ -1,0 +1,16 @@
+<?php
+
+namespace {%namespace%};
+
+use yiqiniu\db\Model;
+
+/**
+ * Class {%className%}
+ * @package {%namespace%}
+ * 基础Model
+ */
+
+class BaseModel extends Model
+{
+    //
+}

@@ -1,0 +1,34 @@
+<?php
+
+return [
+    'server'           => [
+        'host'      => '0.0.0.0', // 监听地址
+        'port'      => {%prot%}, // 监听端口
+        'mode'      => SWOOLE_PROCESS, // 运行模式 默认为SWOOLE_PROCESS
+        'sock_type' => SWOOLE_SOCK_TCP, // sock type 默认为SWOOLE_SOCK_TCP
+        'options'   => [
+            'pid_file'              => runtime_path() . '{%commandName%}.pid',
+            'log_file'              => runtime_path() . '{%commandName%}.log',
+            'daemonize'             => true,
+            // Normally this value should be 1~4 times larger according to your cpu cores.
+            'reactor_num'           => swoole_cpu_num(),
+            'worker_num'            => swoole_cpu_num(),
+            'task_worker_num'       => swoole_cpu_num(),
+            'enable_static_handler' => true,
+            'document_root'         => root_path('public'),
+            'package_max_length'    => 20 * 1024 * 1024,
+            'buffer_output_size'    => 10 * 1024 * 1024,
+            'socket_buffer_size'    => 128 * 1024 * 1024,
+            'max_request'           => 3000,
+            'send_yield'            => true,
+            //600秒内未向服务器发送任何数据，此连接将被强制关闭
+            'heartbeat_idle_time'   => 600,
+            //每60秒遍历一次
+            'heartbeat_check_interval' => 60,
+        ],
+    ],
+    'auto_reload'      => false,
+    'enable_coroutine' => true,
+    'resetters'        => [],
+    'tables'           => [],
+];

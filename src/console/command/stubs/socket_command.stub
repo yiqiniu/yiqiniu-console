@@ -1,0 +1,26 @@
+<?php
+
+namespace app\swoole\command;
+
+
+use think\console\Command;
+use think\console\input\Argument;
+use yiqiniu\swoole\traits\CommandService;
+
+
+class {%className%}Command extends Command
+{
+
+    use CommandService;
+
+    // 命令参数
+    protected $command = [
+        'name' => 'swoole:{%commandName%}',
+        'description' => 'Swoole HTTP Server for ThinkPHP',
+    ];
+
+    //处理类
+    protected  $socket_class = '\app\swoole\service\{%className%}Service';
+
+
+}
