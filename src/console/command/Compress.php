@@ -95,7 +95,9 @@ class Compress extends Command
         }
         $outdir = str_replace($appname, $outname, $indir);
         if (!file_exists($outdir)) {
-            mkdir($outdir, 0777, true);
+            if (!mkdir($outdir, 0777, true) && !is_dir($outdir)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $outdir));
+            }
         }
 
         //指定的模块
@@ -132,7 +134,9 @@ class Compress extends Command
                             continue;
                         }
                         if (!is_dir($outdir . $file)) {
-                            mkdir($outdir . $file, 0777, true);
+                            if (!mkdir($concurrentDirectory = $outdir . $file, 0777, true) && !is_dir($concurrentDirectory)) {
+                                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                            }
                         }
                         $this->startEncrypt($indir . $file . '/', $outdir . $file . '/');
                     } else {
@@ -167,7 +171,9 @@ class Compress extends Command
     {
         $dir = opendir($src);
         if (!is_dir($dst)) {
-            mkdir($dst, 0777, true);
+            if (!mkdir($dst, 0777, true) && !is_dir($dst)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $dst));
+            }
         }
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {

@@ -66,10 +66,14 @@ class Socket extends Make
             mkdir($modulepath.'config',0644,true);
         }*/
         if(!file_exists($modulepath.'command')){
-            mkdir($modulepath.'command',0644,true);
+            if (!mkdir($concurrentDirectory = $modulepath . 'command', 0644, true) && !is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
         if(!file_exists($modulepath.'service')){
-            mkdir($modulepath.'service',0644,true);
+            if (!mkdir($concurrentDirectory = $modulepath . 'service', 0644, true) && !is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
 
         $this->getStub();
