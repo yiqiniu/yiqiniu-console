@@ -75,31 +75,40 @@ class ValidateAll extends Make
             return;
         }
 
-        $map=[];
-        if ($table_name = trim($input->getOption('table'))) {
-            $map = ['table_name' => $table_name];
+
+        $table_name = trim($input->getOption('table'));
+        if(!empty($table_name)){
+            // 生成所有的类
+            $prefix_len = strlen($connect['prefix']);
+            if (substr($table_name, 0, $prefix_len) != $connect['prefix']) {
+                $table_name = $connect['prefix'] . $table_name;
+            }
         }
 
-
+        $map_tablename=[];
         $this->is_postgressql = stripos($connect['type'], 'pgsql');
         if ($this->is_postgressql != false) {
-
-
+            if(!empty($table_name)){
+                $map_tablename = ['tablename' => $table_name];
+            }
             if (!empty($schema)) {
                 $this->schema_name = $schema;
             }
             $tablelist = Db::connect($default ?: $connect)->table('pg_class')
                 ->field(['relname as name', "cast(obj_description(relfilenode,'pg_class') as varchar) as comment"])
-                ->where('relname', 'in', function ($query) use ($map) {
+                ->where('relname', 'in', function ($query) use ($map_tablename) {
                     $query->table('pg_tables')
                         ->where('schemaname', $this->schema_name)
-                        ->where($map)
+                        ->where($map_tablename)
                         ->whereRaw("position('_2' in tablename)=0")->field('tablename');
                 })->select();
         } else {
+            if(!empty($table_name)){
+                $map_tablename = ['table_name' => $table_name];
+            }
             $tablelist = Db::connect($default ?: $connect)->table('information_schema.tables')
                 ->where('table_schema', $connect['database'])
-                ->where($map)
+                ->where($map_tablename)
                 ->field('table_name as name,table_comment as comment')
                 ->select();
         }
