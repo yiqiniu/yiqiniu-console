@@ -16,9 +16,10 @@ class UuidKey extends Command
         $this->setName('make:uuid')->setDescription('Create a new uuid value');
     }
 
-    protected function execute(Input $input, Output $output){
+    protected function execute(Input $input, Output $output)
+    {
 
-        $output->writeln('<info>new uuid string:' .Str::keyGen(). '</info>');
+        $output->writeln('<info>new uuid string:' . Str::keyGen() . '</info>');
     }
 
 }
