@@ -12,10 +12,14 @@
     "autoload": {
         "psr-4": {
             "yiqiniu\\": "src"
-        },
-        "files": [
-            "src/command.php"
-        ]
+        }
+    },
+    "extra": {
+        "think": {
+            "services": [
+                "yiqiniu\\Service"
+            ]
+        }
     },
     "require": {}
 }

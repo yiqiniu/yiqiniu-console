@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'server'           => [
+     'server'     => [
         'host'      => '0.0.0.0', // 监听地址
         'port'      => {%prot%}, // 监听端口
         'mode'      => SWOOLE_PROCESS, // 运行模式 默认为SWOOLE_PROCESS
@@ -9,11 +9,13 @@ return [
         'options'   => [
             'pid_file'              => runtime_path() . '{%commandName%}.pid',
             'log_file'              => runtime_path() . '{%commandName%}.log',
-            'daemonize'             => true,
+            'daemonize'             => false,
             // Normally this value should be 1~4 times larger according to your cpu cores.
             'reactor_num'           => swoole_cpu_num(),
             'worker_num'            => swoole_cpu_num(),
             'task_worker_num'       => swoole_cpu_num(),
+            'task_enable_coroutine' => true,
+            'task_max_request'      => 3000,
             'enable_static_handler' => true,
             'document_root'         => root_path('public'),
             'package_max_length'    => 20 * 1024 * 1024,
@@ -21,14 +23,39 @@ return [
             'socket_buffer_size'    => 128 * 1024 * 1024,
             'max_request'           => 3000,
             'send_yield'            => true,
-            //600秒内未向服务器发送任何数据，此连接将被强制关闭
-            'heartbeat_idle_time'   => 600,
-            //每60秒遍历一次
-            'heartbeat_check_interval' => 60,
+        ],
+     ],
+    'hot_update' => [
+        'enable'  => env('APP_DEBUG', false),
+        'name'    => ['*.php'],
+        'include' => [app_path()],
+        'exclude' => [],
+    ],
+
+    //连接池
+    'pool'       => [
+        'db'    => [
+            'enable'        => true,
+            'max_active'    => 3,
+            'max_wait_time' => 5,
+        ],
+        'cache' => [
+            'enable'        => true,
+            'max_active'    => 3,
+            'max_wait_time' => 5,
         ],
     ],
-    'auto_reload'      => false,
-    'enable_coroutine' => true,
-    'resetters'        => [],
-    'tables'           => [],
+    'coroutine'  => [
+        'enable' => true,
+        'flags'  => SWOOLE_HOOK_ALL,
+    ],
+    'tables'     => [],
+    //每个worker里需要预加载以共用的实例
+    'concretes'  => [],
+    //重置器
+    'resetters'  => [],
+    //每次请求前需要清空的实例
+    'instances'  => [],
+    //每次请求前需要重新执行的服务
+    'services'   => [],
 ];

@@ -6,6 +6,7 @@ namespace yiqiniu\console\command;
 use think\console\command\Make;
 use think\console\Input;
 use think\console\input\Argument;
+use think\console\input\Option;
 use think\console\Output;
 
 class Socket extends Make
@@ -20,12 +21,24 @@ class Socket extends Make
         'service'=>'socket_server'
     ];
 
+    // console 默认内容
+    protected  $console_file=
+        '<?php
+// +----------------------------------------------------------------------
+// | 控制台配置
+// +----------------------------------------------------------------------
+return [
+    // 指令定义
+    \'commands\' => [
+    ],
+];';
+
     protected function configure()
     {
-        parent::configure();
-        $this->setName('make:socket')
-            ->addArgument('commandName', Argument::REQUIRED, "The name of the command")
-            ->addOption('port', '-p', Argument::REQUIRED, "socket Port Number ")
+        //parent::configure();
+        $this->setName('yqn:socket')
+            ->addOption('name', '-c',Option::VALUE_REQUIRED, "The name of the command")
+            ->addOption('port', '-p', Option::VALUE_REQUIRED, "socket Port Number ")
             ->setDescription('Create a new Socket Server command class');
     }
 
@@ -34,7 +47,7 @@ class Socket extends Make
         $stub = file_get_contents(realpath($stubpath));
 
         return str_replace(['{%className%}','{%commandName%}', '{%prot%}'], [
-            $name,
+            ucfirst($name),
             strtolower($name),
             $prot
         ], $stub);
@@ -43,7 +56,7 @@ class Socket extends Make
 
     protected function execute(Input $input, Output $output)
     {
-        $name = trim($input->getArgument('name'));
+        $name = ucfirst(trim($input->getOption('name')));
         $port = trim($input->getOption('port'));
 
         $classname = $this->getClassName($name);
@@ -55,25 +68,21 @@ class Socket extends Make
             return false;
         }
         $apppath = $this->app->getAppPath();
-        $modulepath = $apppath.'swoole\\';
+        $modulepath = $apppath.'swoole'.DIRECTORY_SEPARATOR;
 
-        $command_file = $modulepath.'command\\'.ucfirst($name).'Command.php';
-        $service_file= $modulepath.'service\\'.ucfirst($name).'Service.php';
+        $command_file = $modulepath.'command'.DIRECTORY_SEPARATOR.ucfirst($name).'Command.php';
+        $service_file= $modulepath.'service'.DIRECTORY_SEPARATOR.ucfirst($name).'Service.php';
         $config_file = $this->app->getConfigPath().strtolower($name).'.php';
 
 
-       /* if(!file_exists($modulepath.'config')){
-            mkdir($modulepath.'config',0644,true);
-        }*/
+        /* if(!file_exists($modulepath.'config')){
+             mkdir($modulepath.'config',0644,true);
+         }*/
         if(!file_exists($modulepath.'command')){
-            if (!mkdir($concurrentDirectory = $modulepath . 'command', 0644, true) && !is_dir($concurrentDirectory)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+            mkdir($modulepath.'command',0644,true);
         }
         if(!file_exists($modulepath.'service')){
-            if (!mkdir($concurrentDirectory = $modulepath . 'service', 0644, true) && !is_dir($concurrentDirectory)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+            mkdir($modulepath.'service',0644,true);
         }
 
         $this->getStub();
@@ -92,13 +101,15 @@ class Socket extends Make
 
         }
 
-
+        $this->appendToConsole('app\swoole\command\\'.ucfirst($name).'Command');
         $output->writeln('<info>' . $this->type . ':' . $classname . ' created successfully.</info>');
+
+        //$output->writeln('<info>'  . 'memo : please append \'' . $classname . ':class\' to config\console.php </info>');
     }
 
     protected function getPathName(string $name): string
     {
-        $name = str_replace('app\\', '', $name);
+        $name = str_replace('app'.DIRECTORY_SEPARATOR, '', $name);
 
         return $this->app->getBasePath() . ltrim(str_replace('\\', '/', $name), '/') . '.php';
     }
@@ -114,5 +125,30 @@ class Socket extends Make
         foreach ($this->stubs as $key=>$filename){
             $this->stubs[$key] = __DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . $filename.'.stub';
         }
+    }
+
+    /**
+     * 追加命令到配置文件中
+     * @param $classname
+     * @return bool
+     */
+    protected  function  appendToConsole($classname){
+
+        $console_file = $this->app->getConfigPath().'console.php';
+        $file_context ='';
+        if(file_exists($console_file)){
+            $file_context = file_get_contents($console_file);
+        }else{
+            $file_context = $this->console_file;
+        }
+
+        if($pos = strpos($file_context,'commands')){
+            if($pos2 = strpos($file_context,'[',$pos)){
+                $str = substr($file_context,0,$pos2+1).sprintf("\r\n\t\t//%s\r\n\t\t%s::class,\r\n",$classname,$classname) .substr($file_context,$pos2+1);
+                file_put_contents($console_file,$str);
+            }
+        }
+        return true;
+
     }
 }
