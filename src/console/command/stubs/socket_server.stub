@@ -12,6 +12,9 @@ class {%className%}Service extends BaseSocket
 {
 
 
+    //服务的名称
+    protected $server_name = '{%commandName%}';
+
 
     /**
      * 处理Socket 收到的信息
@@ -23,6 +26,18 @@ class {%className%}Service extends BaseSocket
     public function onReceive($server, $fd, $from_id, $recvdata)
     {
         try {
+            //连接池
+            /*
+            for($i =0;$i<1000;$i++){
+                    Db::name('tmptable')->insert(['key'=>$i.'']);
+            }
+            */
+            协程
+            /*
+            go(function () use ($server, $fd, $recvdata) {
+                $server->send($fd, $recvdata);
+            });
+            /*
             dump($recvdata);
 
         } catch (\Exception $e) {

@@ -5,13 +5,15 @@ namespace app\swoole\command;
 
 use think\console\Command;
 use think\console\input\Argument;
-use yiqiniu\swoole\traits\CommandService;
+use yiqiniu\swoole\CommandService;
 
 
-class {%className%}Command extends Command
+class {%className%}Command extends CommandService
 {
 
-    use CommandService;
+
+    //服务的名称
+    protected $server_name = '{%commandName%}'
 
     // 命令参数
     protected $command = [
@@ -20,7 +22,7 @@ class {%className%}Command extends Command
     ];
 
     //处理类
-    protected  $socket_class = '\app\swoole\service\{%className%}Service';
+    protected  $socket_class = \app\swoole\service\{%className%}Service::class;
 
 
 }

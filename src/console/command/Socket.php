@@ -37,7 +37,7 @@ return [
     {
         //parent::configure();
         $this->setName('yqn:socket')
-            ->addOption('name', '-c',Option::VALUE_REQUIRED, "The name of the command")
+            ->addOption('name', '-n',Option::VALUE_REQUIRED, "The name of the command")
             ->addOption('port', '-p', Option::VALUE_REQUIRED, "socket Port Number ")
             ->setDescription('Create a new Socket Server command class');
     }
