@@ -15,6 +15,13 @@ class {%className%}Service extends BaseSocket
     //服务的名称
     protected $server_name = '{%commandName%}';
 
+    /**
+     * @inheritDoc
+     */
+    public function onWorkStartAction($serv)
+    {
+
+    }
 
     /**
      * 处理Socket 收到的信息
@@ -49,5 +56,24 @@ class {%className%}Service extends BaseSocket
 
     }
 
+    /**
+     * 接收到异步任务
+     * @param $serv
+     * @param Task $task
+     */
+    public function onTaskAciton($serv, Task $task)
+    {
+
+    }
+    /**
+     * 异常任务结束时
+     * @param $serv
+     * @param $task_id
+     * @param $data
+     */
+    public function onFinish($serv, $task_id, $data)
+    {
+        //echo "AsyncTask[$task_id] Finish: $data" . PHP_EOL;
+    }
 
 }
