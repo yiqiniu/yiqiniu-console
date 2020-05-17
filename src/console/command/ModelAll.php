@@ -65,7 +65,7 @@ class ModelAll extends Make
             $this->output->error('database not  setting.');
             return;
         }
-        $this->is_postgressql = stripos($connect['type'], 'pgsql');
+        $this->is_postgressql = stripos($connect['type'], 'pgsql')!==false;
         if ($this->is_postgressql != false) {
 
             if ($schema = trim($input->getOption('schema'))) {

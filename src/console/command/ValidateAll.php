@@ -86,7 +86,7 @@ class ValidateAll extends Make
         }
 
         $map_tablename=[];
-        $this->is_postgressql = stripos($connect['type'], 'pgsql');
+        $this->is_postgressql = stripos($connect['type'], 'pgsql')!==false;
         if ($this->is_postgressql != false) {
             if(!empty($table_name)){
                 $map_tablename = ['tablename' => $table_name];
