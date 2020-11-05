@@ -21,7 +21,7 @@
             ]
         }
     },
-    "require": {
-        "yiqiniu/think-extend": "6.0.x-dev"
+    "require-dev": {
+        "yiqiniu/think-extend": "^6.*-dev"
     }
 }

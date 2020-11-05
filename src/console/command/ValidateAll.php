@@ -186,12 +186,12 @@ class ValidateAll extends Make
 
         } else {
 
-            $sql = "select COLUMN_NAME as field, DATA_TYPE as type, COLUMN_COMMENT as  comment,is_NULLABLE as notnull from information_schema.columns
-                    where table_name='$tablename'";
+            $sql = 'SHOW FULL COLUMNS FROM	'.$tablename;
 
         }
 
         $fields = $db->query($sql);
+
         // 生成模板
         $templates = [
             'rule' => "'%s'=>'require',\r\n\t\t",
@@ -206,25 +206,24 @@ class ValidateAll extends Make
         $ignorefield = ['id', 'bz', 'memo', 'createdate', 'createtime', 'remark', 'status', 'zt'];
         //生成字段
         foreach ($fields as $data) {
-            if ($data['type'] == '-')
+            if ($data['Type'] == '-')
                 continue;
 
-            $field = $data['field'];
+            $field = $data['Field'];
             if (in_array($field, $ignorefield))
                 continue;
 
             if (!$this->allfield) {
 
                 if (($this->is_postgressql && !((bool)('' !== $data['notnull']))) ||
-                    (!$this->is_postgressql && $data['notnull'] === 'NO')) {
+                    (!$this->is_postgressql && $data['Null'] === 'NO')) {
 
                     continue;
                 }
             }
             $retdata['rule'] .= sprintf($templates['rule'], $field);
-            $retdata['message'] .= sprintf($templates['message'], $field, !empty($data['comment']) ? $data['comment'] : $field);
+            $retdata['message'] .= sprintf($templates['message'], $field, !empty($data['Comment']) ? $data['Comment'] : $field);
         }
-
         return $retdata;
     }
 
