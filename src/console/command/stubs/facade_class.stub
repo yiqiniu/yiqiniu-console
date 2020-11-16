@@ -1,0 +1,19 @@
+<?php
+
+namespace {%namespace%};
+use yiqiniu\library\baseLoader;
+{%use%}
+
+/**
+ * {%class_comment%} 代理类
+ * Class {%className%}
+ * @package {%namespace%}
+{%method%}
+ */
+
+class {%className%} extends BaseLoader
+{
+    protected  $_namespace='{%relnamespace%}';
+    protected  $_suffix='{%suffix%}';
+    protected  $_prefix='{%prefix%}';
+}

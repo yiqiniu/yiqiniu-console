@@ -77,7 +77,7 @@ class ValidateAll extends Make
 
 
         $table_name = trim($input->getOption('table'));
-        if(!empty($table_name)){
+        if (!empty($table_name)) {
             // 生成所有的类
             $prefix_len = strlen($connect['prefix']);
             if (substr($table_name, 0, $prefix_len) != $connect['prefix']) {
@@ -85,10 +85,10 @@ class ValidateAll extends Make
             }
         }
 
-        $map_tablename=[];
-        $this->is_postgressql = stripos($connect['type'], 'pgsql')!==false;
+        $map_tablename = [];
+        $this->is_postgressql = stripos($connect['type'], 'pgsql') !== false;
         if ($this->is_postgressql != false) {
-            if(!empty($table_name)){
+            if (!empty($table_name)) {
                 $map_tablename = ['tablename' => $table_name];
             }
             if (!empty($schema)) {
@@ -103,7 +103,7 @@ class ValidateAll extends Make
                         ->whereRaw("position('_2' in tablename)=0")->field('tablename');
                 })->select();
         } else {
-            if(!empty($table_name)){
+            if (!empty($table_name)) {
                 $map_tablename = ['table_name' => $table_name];
             }
             $tablelist = Db::connect($default ?: $connect)->table('information_schema.tables')
@@ -140,7 +140,6 @@ class ValidateAll extends Make
 
         // table 类用于获取字段
         $dbs = Db::connect($default ?: $connect);
-
 
 
         foreach ($tablelist as $k => $table) {
@@ -186,7 +185,7 @@ class ValidateAll extends Make
 
         } else {
 
-            $sql = 'SHOW FULL COLUMNS FROM	'.$tablename;
+            $sql = 'SHOW FULL COLUMNS FROM	' . $tablename;
 
         }
 
@@ -255,9 +254,9 @@ class ValidateAll extends Make
      * 字符串命名风格转换
      * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
      * @access public
-     * @param string $name 字符串
+     * @param string  $name 字符串
      * @param integer $type 转换类型
-     * @param bool $ucfirst 首字母是否大写（驼峰规则）
+     * @param bool    $ucfirst 首字母是否大写（驼峰规则）
      * @return string
      */
     public static function parseName($name = null, $type = 0, $ucfirst = true)
